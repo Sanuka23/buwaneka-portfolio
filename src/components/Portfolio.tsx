@@ -6,7 +6,7 @@ import type { Category, Project } from '../types/portfolio';
 const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [currentImages, setCurrentImages] = useState<string[]>([]);
+  const [currentImages, setCurrentImages] = useState<Array<{image: string, size: string, rotation: number, id: string}>>([]);
 
   const categories = [
     { id: 'all' as Category, label: 'Random' },
@@ -15,22 +15,27 @@ const Portfolio: React.FC = () => {
     { id: 'vector' as Category, label: 'Vector Art' }
   ];
 
-  // Function to get random images from all categories (for "Random" view)
-  const getRandomImages = (count: number = 8) => {
+  // Function to get random images with random properties for scattered layout
+  const getRandomImages = (count: number = 6) => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(project => project.image);
+    return shuffled.slice(0, count).map((project, index) => ({
+      image: project.image,
+      size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
+      rotation: (Math.random() - 0.5) * 10, // Random rotation between -5 and 5 degrees
+      id: `${project.image}-${Date.now()}-${index}`
+    }));
   };
 
   // Initialize and rotate images for "Random" category
   useEffect(() => {
     if (activeCategory === 'all') {
       // Set initial random images
-      setCurrentImages(getRandomImages(8));
+      setCurrentImages(getRandomImages(6));
 
-      // Rotate images every 4 seconds
+      // Rotate images every 5 seconds
       const interval = setInterval(() => {
-        setCurrentImages(getRandomImages(8));
-      }, 4000);
+        setCurrentImages(getRandomImages(6));
+      }, 5000);
 
       return () => clearInterval(interval);
     }
@@ -65,27 +70,38 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
 
-        {/* Show random slideshow for "Random" category */}
+        {/* Show scattered photos for "Random" category */}
         {activeCategory === 'all' && (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-              {currentImages.map((image, index) => (
+            <div className="relative min-h-96 mb-16 flex flex-wrap justify-center items-center gap-4 p-8">
+              {currentImages.map((item, index) => (
                 <div 
-                  key={`${image}-${index}`}
-                  className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
+                  key={item.id}
+                  className={`
+                    relative bg-white p-2 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-10
+                    ${item.size === 'small' ? 'w-24 h-24 md:w-32 md:h-32' : 
+                      item.size === 'medium' ? 'w-32 h-32 md:w-40 md:h-40' : 
+                      'w-40 h-40 md:w-48 md:h-48'}
+                  `}
+                  style={{ 
+                    transform: `rotate(${item.rotation}deg)`,
+                    zIndex: index + 1
+                  }}
                 >
                   <img
-                    src={image}
+                    src={item.image}
                     alt={`Portfolio piece ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    className="w-full h-full object-cover rounded-sm"
                     loading="lazy"
                   />
+                  {/* Photo corner curl effect */}
+                  <div className="absolute top-0 right-0 w-3 h-3 bg-gray-200 transform rotate-45 translate-x-1 -translate-y-1 opacity-50"></div>
                 </div>
               ))}
             </div>
             <div className="text-center">
               <p className="text-gray-500 font-light text-sm">
-                Images refresh automatically • Showcasing logos, posts, and vector designs
+                Photos refresh automatically • A random mix of my creative work
               </p>
             </div>
           </>
