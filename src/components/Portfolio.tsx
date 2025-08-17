@@ -9,27 +9,27 @@ const Portfolio: React.FC = () => {
   const [currentImages, setCurrentImages] = useState<string[]>([]);
 
   const categories = [
-    { id: 'all' as Category, label: 'All' },
+    { id: 'all' as Category, label: 'Random' },
     { id: 'logo' as Category, label: 'Logo Design' },
     { id: 'poster' as Category, label: 'Post Designs' },
     { id: 'vector' as Category, label: 'Vector Art' }
   ];
 
-  // Function to get random images from all categories (for "All" view)
-  const getRandomImages = (count: number = 12) => {
+  // Function to get random images from all categories (for "Random" view)
+  const getRandomImages = (count: number = 8) => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count).map(project => project.image);
   };
 
-  // Initialize and rotate images for "All" category
+  // Initialize and rotate images for "Random" category
   useEffect(() => {
     if (activeCategory === 'all') {
       // Set initial random images
-      setCurrentImages(getRandomImages(12));
+      setCurrentImages(getRandomImages(8));
 
       // Rotate images every 4 seconds
       const interval = setInterval(() => {
-        setCurrentImages(getRandomImages(12));
+        setCurrentImages(getRandomImages(8));
       }, 4000);
 
       return () => clearInterval(interval);
@@ -65,10 +65,10 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
 
-        {/* Show random slideshow for "All" category */}
+        {/* Show random slideshow for "Random" category */}
         {activeCategory === 'all' && (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
               {currentImages.map((image, index) => (
                 <div 
                   key={`${image}-${index}`}
