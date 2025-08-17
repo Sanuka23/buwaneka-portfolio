@@ -18,8 +18,8 @@ const Contact: React.FC = () => {
     {
       icon: Linkedin,
       label: 'LinkedIn',
-      value: 'link.dev/buwaneka',
-      href: 'https://link.dev/buwaneka'
+      value: 'linkedin.com/in/buwaneka-madushan',
+      href: 'https://www.linkedin.com/in/buwaneka-madushan-37044b280/'
     },
     {
       icon: MapPin,
