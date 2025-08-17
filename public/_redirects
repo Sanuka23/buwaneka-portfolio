@@ -1,0 +1,11 @@
+# Netlify redirects file for React SPA
+# This ensures all routes are handled by React Router
+
+# Redirect all routes to index.html (for React Router)
+/*    /index.html   200
+
+# Optional: Redirect common old URLs if needed
+# /old-path  /new-path  301
+
+# Handle API routes if you add them later
+# /api/*  /.netlify/functions/:splat  200

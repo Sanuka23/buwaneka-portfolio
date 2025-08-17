@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:prod": "npm run lint && npm run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "clean": "rm -rf dist",
+    "deploy": "npm run build:prod && echo 'Ready for deployment to Netlify'"
   },
   "dependencies": {
     "lucide-react": "^0.539.0",
