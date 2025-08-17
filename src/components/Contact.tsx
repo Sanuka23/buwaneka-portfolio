@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Linkedin } from 'lucide-react';
+import { projects } from '../data/projects';
 
 const Contact: React.FC = () => {
+  const [currentImages, setCurrentImages] = useState<string[]>([]);
+
+  // Function to get random images from all categories
+  const getRandomImages = (count: number = 4) => {
+    const shuffled = [...projects].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count).map(project => project.image);
+  };
+
+  // Initialize and rotate images
+  useEffect(() => {
+    // Set initial random images
+    setCurrentImages(getRandomImages(4));
+
+    // Rotate images every 3 seconds
+    const interval = setInterval(() => {
+      setCurrentImages(getRandomImages(4));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
   const contactInfo = [
     {
       icon: Phone,
@@ -41,7 +62,28 @@ const Contact: React.FC = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
+          {/* Portfolio Slideshow */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-light text-olive-300 mb-8 text-center">Recent Work</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {currentImages.map((image, index) => (
+                <div 
+                  key={`${image}-${index}`}
+                  className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105"
+                >
+                  <img
+                    src={image}
+                    alt={`Portfolio piece ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-700"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {contactInfo.map((item, index) => {
               const Icon = item.icon;

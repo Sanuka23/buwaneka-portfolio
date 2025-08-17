@@ -32,7 +32,7 @@ function App() {
       // Don't update active section if we're programmatically scrolling
       if (isScrollingToSection.current) return;
 
-      const sections = ['home', 'about', 'portfolio', 'contact'];
+      const sections = ['home', 'portfolio', 'about', 'contact'];
       const scrollPosition = window.scrollY + 150; // Offset for better detection
 
       for (const section of sections) {
@@ -60,8 +60,8 @@ function App() {
     <div className="relative">
       <Navigation activeSection={activeSection} scrollToSection={scrollToSection} />
       <Hero scrollToSection={scrollToSection} />
-      <About />
       <Portfolio />
+      <About />
       <Contact />
     </div>
   );

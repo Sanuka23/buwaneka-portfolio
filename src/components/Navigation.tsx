@@ -8,8 +8,8 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ activeSection, scrollToSection }) => {
   const navItems = [
     { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
     { id: 'portfolio', label: 'Portfolio' },
+    { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact' }
   ];
 
