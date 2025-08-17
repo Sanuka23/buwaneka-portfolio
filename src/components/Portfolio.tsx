@@ -20,15 +20,13 @@ const Portfolio: React.FC = () => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count).map((project, index) => {
       const size = ['small', 'medium', 'large'][Math.floor(Math.random() * 3)];
-      // Adjust positioning ranges based on photo size to prevent cropping
-      const sizeMultiplier = size === 'small' ? 0.9 : size === 'medium' ? 0.8 : 0.7;
       
       return {
         image: project.image,
         size,
-        rotation: (Math.random() - 0.5) * 20, // Random rotation between -10 and 10 degrees
-        top: Math.random() * (60 * sizeMultiplier) + 10, // Adjusted for photo size
-        left: Math.random() * (70 * sizeMultiplier) + 10, // Adjusted for photo size
+        rotation: (Math.random() - 0.5) * 15, // Reduced rotation range
+        top: Math.random() * 50 + 10, // Reduced vertical range (10% to 60%)
+        left: Math.random() * 80 + 5, // Increased horizontal spread (5% to 85%)
         id: `${project.image}-${Date.now()}-${index}`
       };
     });
@@ -81,15 +79,15 @@ const Portfolio: React.FC = () => {
         {/* Show scattered photos for "Random" category */}
         {activeCategory === 'all' && (
           <>
-            <div className="relative h-96 mb-12">
+            <div className="relative h-64 mb-12">
               {currentImages.map((item, index) => (
                 <div 
                   key={item.id}
                   className={`
-                    absolute bg-white p-2 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-20
-                    ${item.size === 'small' ? 'w-20 h-20 md:w-24 md:h-24' : 
-                      item.size === 'medium' ? 'w-28 h-28 md:w-32 md:h-32' : 
-                      'w-36 h-36 md:w-40 md:h-40'}
+                    absolute bg-white p-1.5 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-20
+                    ${item.size === 'small' ? 'w-16 h-16 md:w-20 md:h-20' : 
+                      item.size === 'medium' ? 'w-20 h-20 md:w-24 md:h-24' : 
+                      'w-24 h-24 md:w-28 md:h-28'}
                   `}
                   style={{ 
                     transform: `rotate(${item.rotation}deg)`,
