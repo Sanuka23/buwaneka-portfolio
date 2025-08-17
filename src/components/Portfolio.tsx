@@ -6,7 +6,7 @@ import type { Category, Project } from '../types/portfolio';
 const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [currentImages, setCurrentImages] = useState<Array<{image: string, size: string, rotation: number, top: number, left: number, id: string}>>([]);
+  const [currentImages, setCurrentImages] = useState<Array<{image: string, id: string}>>([]);
 
   const categories = [
     { id: 'all' as Category, label: 'Random' },
@@ -15,21 +15,42 @@ const Portfolio: React.FC = () => {
     { id: 'vector' as Category, label: 'Vector Art' }
   ];
 
-  // Function to get random images with random properties for scattered layout
+  // Function to get random images for grid layout
   const getRandomImages = (count: number = 6) => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map((project, index) => {
-      const size = ['small', 'medium', 'large'][Math.floor(Math.random() * 3)];
-      
-      return {
-        image: project.image,
-        size,
-        rotation: (Math.random() - 0.5) * 15, // Reduced rotation range
-        top: Math.random() * 50 + 10, // Reduced vertical range (10% to 60%)
-        left: Math.random() * 80 + 5, // Increased horizontal spread (5% to 85%)
-        id: `${project.image}-${Date.now()}-${index}`
-      };
+    return shuffled.slice(0, count).map((project, index) => ({
+      image: project.image,
+      id: `${project.image}-${Date.now()}-${index}`
+    }));
+  };
+
+  // Function to replace 3 random images while keeping others
+  const replaceRandomImages = (currentImages: Array<{image: string, id: string}>) => {
+    const newImages = [...currentImages];
+    const indicesToReplace: number[] = [];
+    
+    // Get 3 random indices to replace
+    while (indicesToReplace.length < 3 && indicesToReplace.length < newImages.length) {
+      const randomIndex = Math.floor(Math.random() * newImages.length);
+      if (!indicesToReplace.includes(randomIndex)) {
+        indicesToReplace.push(randomIndex);
+      }
+    }
+    
+    // Get new random projects
+    const availableProjects = [...projects].sort(() => 0.5 - Math.random());
+    
+    // Replace the selected indices with new images
+    indicesToReplace.forEach((index, i) => {
+      if (availableProjects[i]) {
+        newImages[index] = {
+          image: availableProjects[i].image,
+          id: `${availableProjects[i].image}-${Date.now()}-${index}`
+        };
+      }
     });
+    
+    return newImages;
   };
 
   // Initialize and rotate images for "Random" category
@@ -38,18 +59,18 @@ const Portfolio: React.FC = () => {
       // Set initial random images
       setCurrentImages(getRandomImages(6));
 
-      // Rotate images every 5 seconds
+      // Rotate 3 images every 5 seconds
       const interval = setInterval(() => {
-        setCurrentImages(getRandomImages(6));
+        setCurrentImages(prev => replaceRandomImages(prev));
       }, 5000);
 
       return () => clearInterval(interval);
     }
   }, [activeCategory]);
 
-  const filteredProjects = activeCategory === 'all' 
-    ? [] // We'll show random slideshow instead of all projects
-    : projects.filter(project => project.category === activeCategory);
+  const filteredProjects = projects.filter(project => 
+    activeCategory === 'all' || project.category === activeCategory
+  );
 
   return (
     <section id="portfolio" className="min-h-screen py-20">
@@ -76,47 +97,43 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
 
-        {/* Show scattered photos for "Random" category */}
-        {activeCategory === 'all' && (
-          <>
-            <div className="relative h-64 mb-12">
-              {currentImages.map((item, index) => (
-                <div 
+
+        {/* Show random images for "all" category */}
+        {activeCategory === 'all' && currentImages.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {currentImages.map((item) => {
+              const project = projects.find(p => p.image === item.image);
+              return project ? (
+                <div
                   key={item.id}
-                  className={`
-                    absolute bg-white p-1.5 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-20
-                    ${item.size === 'small' ? 'w-16 h-16 md:w-20 md:h-20' : 
-                      item.size === 'medium' ? 'w-20 h-20 md:w-24 md:h-24' : 
-                      'w-24 h-24 md:w-28 md:h-28'}
-                  `}
-                  style={{ 
-                    transform: `rotate(${item.rotation}deg)`,
-                    top: `${item.top}%`,
-                    left: `${item.left}%`,
-                    zIndex: index + 1
-                  }}
+                  className="group cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                  onClick={() => setSelectedProject(project)}
                 >
-                  <img
-                    src={item.image}
-                    alt={`Portfolio piece ${index + 1}`}
-                    className="w-full h-full object-cover rounded-sm"
-                    loading="lazy"
-                  />
-                  {/* Photo corner curl effect */}
-                  <div className="absolute top-0 right-0 w-2 h-2 bg-gray-200 transform rotate-45 translate-x-1 -translate-y-1 opacity-50"></div>
+                  <div className="aspect-square bg-gray-200 overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-6 bg-white">
+                    <h3 className="text-lg font-medium text-gray-800 mb-2">{project.title}</h3>
+                    <p className="text-sm text-gray-600 font-light leading-relaxed">{project.description}</p>
+                    <div className="mt-3">
+                      <span className="inline-block px-3 py-1 bg-olive-100 text-olive-400 text-xs font-light rounded-full">
+                        {project.category === 'logo' ? 'Logo Design' : 
+                         project.category === 'poster' ? 'Post Designs' : 'Vector Art'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="text-center">
-              <p className="text-gray-500 font-light text-sm">
-                Photos refresh automatically • A random mix of my creative work
-              </p>
-            </div>
-          </>
+              ) : null;
+            })}
+          </div>
         )}
 
         {/* Show filtered projects for specific categories */}
-        {activeCategory !== 'all' && (
+        {activeCategory !== 'all' && filteredProjects.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project) => (
               <div
