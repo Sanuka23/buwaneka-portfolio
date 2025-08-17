@@ -18,14 +18,20 @@ const Portfolio: React.FC = () => {
   // Function to get random images with random properties for scattered layout
   const getRandomImages = (count: number = 6) => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map((project, index) => ({
-      image: project.image,
-      size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
-      rotation: (Math.random() - 0.5) * 20, // Random rotation between -10 and 10 degrees
-      top: Math.random() * 70 + 5, // Random top position (5% to 75%)
-      left: Math.random() * 80 + 5, // Random left position (5% to 85%)
-      id: `${project.image}-${Date.now()}-${index}`
-    }));
+    return shuffled.slice(0, count).map((project, index) => {
+      const size = ['small', 'medium', 'large'][Math.floor(Math.random() * 3)];
+      // Adjust positioning ranges based on photo size to prevent cropping
+      const sizeMultiplier = size === 'small' ? 0.9 : size === 'medium' ? 0.8 : 0.7;
+      
+      return {
+        image: project.image,
+        size,
+        rotation: (Math.random() - 0.5) * 20, // Random rotation between -10 and 10 degrees
+        top: Math.random() * (60 * sizeMultiplier) + 10, // Adjusted for photo size
+        left: Math.random() * (70 * sizeMultiplier) + 10, // Adjusted for photo size
+        id: `${project.image}-${Date.now()}-${index}`
+      };
+    });
   };
 
   // Initialize and rotate images for "Random" category
@@ -75,7 +81,7 @@ const Portfolio: React.FC = () => {
         {/* Show scattered photos for "Random" category */}
         {activeCategory === 'all' && (
           <>
-            <div className="relative h-80 mb-12 overflow-hidden">
+            <div className="relative h-96 mb-12">
               {currentImages.map((item, index) => (
                 <div 
                   key={item.id}
