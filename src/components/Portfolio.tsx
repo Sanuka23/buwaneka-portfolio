@@ -6,7 +6,7 @@ import type { Category, Project } from '../types/portfolio';
 const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [currentImages, setCurrentImages] = useState<Array<{image: string, size: string, rotation: number, id: string}>>([]);
+  const [currentImages, setCurrentImages] = useState<Array<{image: string, size: string, rotation: number, top: number, left: number, id: string}>>([]);
 
   const categories = [
     { id: 'all' as Category, label: 'Random' },
@@ -21,7 +21,9 @@ const Portfolio: React.FC = () => {
     return shuffled.slice(0, count).map((project, index) => ({
       image: project.image,
       size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
-      rotation: (Math.random() - 0.5) * 10, // Random rotation between -5 and 5 degrees
+      rotation: (Math.random() - 0.5) * 20, // Random rotation between -10 and 10 degrees
+      top: Math.random() * 70 + 5, // Random top position (5% to 75%)
+      left: Math.random() * 80 + 5, // Random left position (5% to 85%)
       id: `${project.image}-${Date.now()}-${index}`
     }));
   };
@@ -73,18 +75,20 @@ const Portfolio: React.FC = () => {
         {/* Show scattered photos for "Random" category */}
         {activeCategory === 'all' && (
           <>
-            <div className="relative min-h-96 mb-16 flex flex-wrap justify-center items-center gap-4 p-8">
+            <div className="relative h-80 mb-12 overflow-hidden">
               {currentImages.map((item, index) => (
                 <div 
                   key={item.id}
                   className={`
-                    relative bg-white p-2 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-10
-                    ${item.size === 'small' ? 'w-24 h-24 md:w-32 md:h-32' : 
-                      item.size === 'medium' ? 'w-32 h-32 md:w-40 md:h-40' : 
-                      'w-40 h-40 md:w-48 md:h-48'}
+                    absolute bg-white p-2 shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-110 hover:z-20
+                    ${item.size === 'small' ? 'w-20 h-20 md:w-24 md:h-24' : 
+                      item.size === 'medium' ? 'w-28 h-28 md:w-32 md:h-32' : 
+                      'w-36 h-36 md:w-40 md:h-40'}
                   `}
                   style={{ 
                     transform: `rotate(${item.rotation}deg)`,
+                    top: `${item.top}%`,
+                    left: `${item.left}%`,
                     zIndex: index + 1
                   }}
                 >
@@ -95,7 +99,7 @@ const Portfolio: React.FC = () => {
                     loading="lazy"
                   />
                   {/* Photo corner curl effect */}
-                  <div className="absolute top-0 right-0 w-3 h-3 bg-gray-200 transform rotate-45 translate-x-1 -translate-y-1 opacity-50"></div>
+                  <div className="absolute top-0 right-0 w-2 h-2 bg-gray-200 transform rotate-45 translate-x-1 -translate-y-1 opacity-50"></div>
                 </div>
               ))}
             </div>
