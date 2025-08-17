@@ -93,6 +93,13 @@ export const projects: Project[] = [
     image: '/assets/logos/Logo_13.png',
     description: 'Professional business logo with strong brand presence and impact.'
   },
+  {
+    id: 44,
+    title: 'Innovative Logo Design',
+    category: 'logo',
+    image: '/assets/logos/Logo_14.png',
+    description: 'Cutting-edge logo design with fresh approach and modern visual appeal.'
+  },
 
   // Digital Marketing Posts
   {
@@ -269,6 +276,20 @@ export const projects: Project[] = [
     category: 'poster',
     image: '/assets/Poster/Post_25.png',
     description: 'Strategic digital marketing visual designed for maximum reach and impact.'
+  },
+  {
+    id: 45,
+    title: 'Creative Campaign Post',
+    category: 'poster',
+    image: '/assets/Poster/Post_26.png',
+    description: 'Dynamic creative campaign post with innovative design and compelling messaging.'
+  },
+  {
+    id: 46,
+    title: 'Modern Marketing Design',
+    category: 'poster',
+    image: '/assets/Poster/Post_27.png',
+    description: 'Contemporary marketing design with bold visuals and effective brand communication.'
   },
 
   // Vector Art

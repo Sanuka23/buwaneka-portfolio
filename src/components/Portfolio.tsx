@@ -9,9 +9,9 @@ const Portfolio: React.FC = () => {
   const [currentImages, setCurrentImages] = useState<Array<{image: string, id: string}>>([]);
 
   const categories = [
-    { id: 'all' as Category, label: 'Random' },
-    { id: 'logo' as Category, label: 'Logo Design' },
+    { id: 'all' as Category, label: 'Recent' },
     { id: 'poster' as Category, label: 'Post Designs' },
+    { id: 'logo' as Category, label: 'Logo Design' },
     { id: 'vector' as Category, label: 'Vector Art' }
   ];
 
